@@ -8,12 +8,28 @@ IDK pointers, dot operator & arrow operator;
 
 TO DO:
 1 Introduction of lendee
-    First Name:
-    Last Name:
-    Age: 
-    Monthly Salary (PHP):
+    provided by the user of this application
+        First Name:
+        Last Name:
+        Age: 
+        Monthly Salary (PHP):
 
-2 Lending Amount or if possible 
+    result / to be printed out:
+        First Name:
+        Last Name:
+        Age:
+
+        possible loan amount:
+
+
+2 Lending Amount details:
+    provided by the user of this application
+        Amount to be loaned:
+        Duration
+
+    to be computed:
+        amount total + interest
+        amount to be paid per month
 
 3 Adding First & Last Name, Age and Monthly Salary to be Iterable using a function
 
