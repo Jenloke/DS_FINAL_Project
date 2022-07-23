@@ -1,7 +1,29 @@
 /*
 Final Project DSA: Micro Lending Services
 
+Tips: 
+Don't Over Complicate Things;
+Keep it simple;
+IDK pointers, dot operator & arrow operator;
+
 TO DO:
+1 Introduction of lendee
+    First Name:
+    Last Name:
+    Age: 
+    Monthly Salary (PHP):
+
+2 Lending Amount or if possible 
+
+3 Adding First & Last Name, Age and Monthly Salary to be Iterable using a function
+
+4 Status Check of Lend Money for Lendee that is to be approved, could be a queue
+
+5 Lendee Status after lending is approved by lendor
+    if paid or still paying
+    and if x months is still needed to be paid
+
+5 What will the UI look like
 
 */
 
