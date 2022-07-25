@@ -74,5 +74,22 @@ int main()
 
 int main() 
 {
+    string firstName, lastName;
+    int age, monthlySalary;
 
+    cout << "First Name: ";
+    cin >> firstName;
+    cout << firstName << endl; 
+
+    cout << "Last Name: ";
+    cin >> lastName;
+    cout << lastName << endl; 
+    
+    cout << "Age: ";
+    cin >> age;
+    cout << age << endl; 
+
+    cout << "Monthly Salary: ";
+    cin >> monthlySalary;
+    cout << monthlySalary << endl; 
 }
