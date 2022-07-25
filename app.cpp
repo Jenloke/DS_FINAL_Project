@@ -78,11 +78,11 @@ int main()
     int age, monthlySalary;
 
     cout << "First Name: ";
-    cin >> firstName;
+    getline(cin, firstName);
     cout << firstName << endl; 
 
     cout << "Last Name: ";
-    cin >> lastName;
+    getline(cin, lastName);
     cout << lastName << endl; 
     
     cout << "Age: ";
