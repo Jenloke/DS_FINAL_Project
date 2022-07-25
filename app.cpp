@@ -74,26 +74,25 @@ int main()
 
 int main() 
 {
-    string firstName, lastName;
-    int age, monthlySalary;
+    string firstName[10] = {}, lastName[10] = {};
+    int age[10] = {}, monthlySalary[10] = {};
+    int userNumber = 0;
 
     cout << "First Name: ";
-    getline(cin, firstName);
-    cout << firstName << endl; 
+    getline(cin, firstName[userNumber]);
+    cout << firstName[userNumber] << endl; 
 
     cout << "Last Name: ";
-    getline(cin, lastName);
-    cout << lastName << endl; 
+    getline(cin, lastName[userNumber]);
+    cout << lastName[userNumber] << endl; 
     
     cout << "Age: ";
-    cin >> age;
-    cout << age << endl; 
+    cin >> age[userNumber];
+    cout << age[userNumber] << endl; 
 
     cout << "Monthly Salary: ";
-    cin >> monthlySalary;
-    cout << monthlySalary << endl;
+    cin >> monthlySalary[userNumber];
+    cout << monthlySalary[userNumber] << endl;
 
-    int x;
-    cout << "User Number: ";
-    cin >> x; 
+    userNumber++;
 }
