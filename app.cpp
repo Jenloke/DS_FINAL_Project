@@ -91,5 +91,9 @@ int main()
 
     cout << "Monthly Salary: ";
     cin >> monthlySalary;
-    cout << monthlySalary << endl; 
+    cout << monthlySalary << endl;
+
+    int x;
+    cout << "User Number: ";
+    cin >> x; 
 }
