@@ -46,6 +46,7 @@ TO DO:
 #include <iostream>
 using namespace std; 
 
+/*
 int interest_rate(int x)
 {
     return x + (x*0.15);
@@ -69,3 +70,4 @@ int main()
 
     return 0;
 }
+*/
