@@ -32,28 +32,26 @@ void enterUserDetails()
     cout << "Enter your Pesonal Details" << endl;
 
     cout << "First Name: ";
-    getline(cin, users[userNumber].firstName);
+    getline(cin >> ws, users[userNumber].firstName);
 
     cout << "Last Name: ";
-    getline(cin, users[userNumber].lastName);
+    getline(cin >> ws, users[userNumber].lastName);
 
     cout << "Age: ";
+    //getline(cin, users[userNumber].age);
     cin >> users[userNumber].age;
-}
 
-void correctUserAge()
-{
-    //  since the minimum age that can loan is ___ \n so please try again
+    blankLine();
 
     if (users[userNumber].age < minAgeLoan) {
         cout << "Have you entered your age correctly." << endl;
         cout << "The minimum age that can loan is " << minAgeLoan << "." << endl;
         cout << "Please enter your Personal Details again." << endl;
         blankLine();
+
         enterUserDetails();
     }
 }
-
 
 void confirmUserDeatails()
 {
@@ -68,6 +66,7 @@ void confirmUserDeatails()
     cin >> userAnswer;
 
     if (userAnswer == "Y") {
+        blankLine();
         cout << "Thank you for confirming your Personal Details. You may now proceed on the loaning process." << endl;
         blankLine();
     }
@@ -76,6 +75,7 @@ void confirmUserDeatails()
         cout << "Please make sure that they are correct this time." << endl;
         blankLine();
         enterUserDetails();
+        confirmUserDeatails();
     }
     // Still Needs Error Handling
 }
@@ -92,10 +92,6 @@ int main()
     // Fourth Option is how much money the Service Maid
 
     enterUserDetails();
-    blankLine();
-    correctUserAge();
-
-
     confirmUserDeatails();
 
     cout << "Monthly Salary: ";
