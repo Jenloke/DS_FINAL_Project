@@ -1,23 +1,25 @@
 #include <iostream>
 using namespace std;
 
-int loanBracket[2] = {5000, 10000};
-int loanDurations[2] = {6,12};
+//int loanBracket[2] = {5000, 10000};
+//int loanDurations[2] = {6,12};
 const int loanMaxDuration = 24;
 const int totalUsers = 5;
 
 const int minAgeLoan = 20;
+const int maxLoanMultiplier = 2;
 
 int userNumber = 0;
 
 struct userInfo {
-    //bool userGenerated;
+    //bool userGenerated; // This is needed
 
     string firstName;
     string lastName;
     int age;
     int monthlySalary;
 
+    int loanMaxPossibleLoan;
     int loanUserAmount;
     int loanUserDuration;
     int loanUserMonthlyDue;
@@ -30,25 +32,20 @@ void blankLine() { cout << endl; }
 void enterUserDetails()
 {
     cout << "Enter your Pesonal Details" << endl;
-
     cout << "First Name: ";
     getline(cin >> ws, users[userNumber].firstName);
-
     cout << "Last Name: ";
     getline(cin >> ws, users[userNumber].lastName);
-
     cout << "Age: ";
-    //getline(cin, users[userNumber].age);
     cin >> users[userNumber].age;
 
     blankLine();
 
-    if (users[userNumber].age < minAgeLoan) {
-        cout << "Have you entered your age correctly." << endl;
+    if (users[userNumber].age < minAgeLoan) { // To enter Details again if age requirement is not met
+        cout << "You have not met the age requirements for a loan." << endl;
         cout << "The minimum age that can loan is " << minAgeLoan << "." << endl;
         cout << "Please enter your Personal Details again." << endl;
         blankLine();
-
         enterUserDetails();
     }
 }
@@ -62,7 +59,8 @@ void confirmUserDeatails()
     blankLine();
 
     string userAnswer;
-    cout << "Please confirm that you have entered your correct Personal Details \nbased on what is printed above? (Y/N) [Y for Yes while N for No]: ";
+    cout << "Please confirm that you have entered your correct Personal Details"<< endl;
+    cout << "based on what is printed above? (Y/N) [Y for Yes while N for No]: ";
     cin >> userAnswer;
 
     if (userAnswer == "Y") {
@@ -80,6 +78,51 @@ void confirmUserDeatails()
     // Still Needs Error Handling
 }
 
+void createLoanAmount()
+{
+    cout << "Please write your Monthly Salary to determine what is the " << endl;
+    cout << "highest possible amount of loan we can loan you in PHP: ";
+    cin >> users[userNumber].monthlySalary;
+    blankLine();
+
+    if (users[userNumber].monthlySalary < 0) {
+        cout << "The Monthly Salary of " << users[userNumber].monthlySalary << " PHP that you have entered is invalid since it is negative." << endl;
+        cout << "Please enter a valid Monthly Salary in PHP." << endl ;
+        cout << "You are to go back to entering your monthly Salary." << endl;
+        blankLine();
+        createLoanAmount();
+    }
+    // Add error handling if not int also if negative
+
+    users[userNumber].loanMaxPossibleLoan = users[userNumber].monthlySalary * maxLoanMultiplier;
+    cout << "Based on your given monthly Salary of, " << users[userNumber].monthlySalary << " PHP the maximum amount of loan possible is " << users[userNumber].loanMaxPossibleLoan << " PHP." << endl;
+    cout << "How much would you like to loan in PHP? ";
+    cin >> users[userNumber].loanUserAmount;
+    blankLine();
+
+    if (users[userNumber].loanUserAmount <= users[userNumber].loanMaxPossibleLoan && users[userNumber].loanUserAmount > 0) {
+        cout << "You can now proceed to the next step." << endl;
+        blankLine();
+    }
+    if (users[userNumber].loanUserAmount >= users[userNumber].loanMaxPossibleLoan) {
+        cout << "The amount of loan of " << users[userNumber].loanUserAmount << " PHP that you have entered is not qualified since it is above the maximum possible loan based on your salary." << endl;
+        cout << "Please enter a valid loan amount that is below your maximum possible loan which is ." << endl;
+        cout << "You are to go back to entering your monthly Salary." << endl;
+        blankLine();
+        createLoanAmount();
+    }
+    if (users[userNumber].loanUserAmount < 0) {
+        cout << "The amount of loan of " << users[userNumber].loanUserAmount << " PHP that you have entered is invalid since it is negative." << endl;
+        cout << "Please enter a valid loan amount." << endl ;
+        cout << "You are to go back to entering your monthly Salary." << endl;
+        blankLine();
+        createLoanAmount();
+    }
+    // Error Handling for value if the value entered is not int should be a function that can be used by other void functions
+}
+
+//void
+
 int main()
 {
     cout << "Welcome to Micro Lending Services" << endl;
@@ -90,28 +133,39 @@ int main()
     // If Possible Cancel a Loan; will be included in Option 2
     // Third Option will be show what months are already paid
     // Fourth Option is how much money the Service Maid
+    // Message that will appear when the loan is fully paid upon the final payment paid
+    // If possible create a way to create, read, update, delete data
 
-    enterUserDetails();
-    confirmUserDeatails();
+    /*
+    Program Structure
+    Option 1: Create a new Loan;
+        Condition if there is an available slot in struct array,
+        else it is not possible unless a loan from the list turned to fully paid
+    Option 2: Pay a month off a loan
 
-    cout << "Monthly Salary: ";
-    cin >> users[userNumber].monthlySalary;
+        A compromise would be user will write off how many months is to be paid off
+        based on what amount and month the user wrote
 
-    // Based on your given monthly salary of users[userNumber].monthlySalary the highest amount in PHP you could loan is x
-    // To add more based on bracket
+        Will print a receipt after payment and prints all months that have been paid
 
-    // Still Needed; Computes if monthly salary is eligible for desired loan
-    //if (users[userNumber].monthlySalary >= loanBracket[1]) {
-    //    cout << "Based on your given monthly salary of " << users[userNumber].monthlySalary << " PHP the highest amount you could loan is " << loanBracket[1] << " PHP." << endl;
-    //}
+        If possible to pay off multiple months off a loan
 
-    // Error Handling for
+        Also loan is to be deleted when all bool is turned to false then print like congrats on paying your loan, hope we see you again here
 
-    cout << "Loan Amount: ";
-    cin >> users[userNumber].loanUserAmount;
-    //cout << users[userNumber].loanUserAmount << endl;
+    Option 3: Show your Loan; Simple Seacrh and Print Part
+    Option 4: Show How much the Micro Lending Service Made; Simple Print
+    Option 5: Exit
 
-    //cout << "Based on your given loan amount, your loan in " << users[userNumber].loanDuration << endl;
+    Will Return to this part after the process of each option
+    */
+
+    // TO DO: 29/07/2022
+    // Finish the System without error handling yet
+
+    //enterUserDetails();
+    //confirmUserDeatails();
+
+    createLoanAmount();
 
     cout << "Loan Duration (6 Months or 12 Months): ";
     cin >> users[userNumber].loanUserDuration;
