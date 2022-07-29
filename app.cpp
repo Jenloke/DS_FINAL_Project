@@ -1,10 +1,19 @@
 #include <iostream>
+#include <climits> // for INT_MAX limits
 using namespace std;
 
-//int loanBracket[2] = {5000, 10000};
-//int loanDurations[2] = {6,12};
-const int loanMaxDuration = 24;
-const int totalUsers = 5;
+/*
+if (cin.fail()) {
+    cin.clear(); // clear input buffer to restore cin to a usable state
+    cin.ignore(INT_MAX, '\n'); // ignore last input
+    createLoanAmount();
+}
+*/
+
+const int loanBracket[2] = {50000, 100000};
+const int loanDurations[3] = {12,18,24};
+const int loanMaxDuration = 24; // Was 24, Trying 5 Years || 60 Months
+const int totalUsers = 5; // Max Users this should be easily changeable and would not break anything
 
 const int minAgeLoan = 20;
 const int maxLoanMultiplier = 2;
@@ -78,21 +87,30 @@ void confirmUserDeatails()
     // Still Needs Error Handling
 }
 
+// To add Called Again Variable if User wants to goc back to this function; bool funcCalledAgain = False;
 void createLoanAmount()
 {
-    cout << "Please write your Monthly Salary to determine what is the " << endl;
+    cout << "Please write your Monthly Salary to determine the " << endl;
     cout << "highest possible amount of loan we can loan you in PHP: ";
     cin >> users[userNumber].monthlySalary;
     blankLine();
 
-    if (users[userNumber].monthlySalary < 0) {
-        cout << "The Monthly Salary of " << users[userNumber].monthlySalary << " PHP that you have entered is invalid since it is negative." << endl;
+    if (cin.fail()) { // If the value creates an infinite loop
+        cin.clear(); // clear input buffer to restore cin to a usable state
+        cin.ignore(INT_MAX, '\n'); // ignore last input
+
         cout << "Please enter a valid Monthly Salary in PHP." << endl ;
-        cout << "You are to go back to entering your monthly Salary." << endl;
+        cout << "You are to go back to entering your Monthly Salary." << endl;
         blankLine();
         createLoanAmount();
     }
-    // Add error handling if not int also if negative
+    if (users[userNumber].monthlySalary < 0) { // if negative
+        cout << "The Monthly Salary of " << users[userNumber].monthlySalary << " PHP that you have entered is invalid since it is negative." << endl;
+        cout << "Please enter a valid Monthly Salary in PHP." << endl ;
+        cout << "You are to go back to entering your Monthly Salary." << endl;
+        blankLine();
+        createLoanAmount();
+    }
 
     users[userNumber].loanMaxPossibleLoan = users[userNumber].monthlySalary * maxLoanMultiplier;
     cout << "Based on your given monthly Salary of, " << users[userNumber].monthlySalary << " PHP the maximum amount of loan possible is " << users[userNumber].loanMaxPossibleLoan << " PHP." << endl;
@@ -100,28 +118,85 @@ void createLoanAmount()
     cin >> users[userNumber].loanUserAmount;
     blankLine();
 
+    if (cin.fail()) {
+        cin.clear(); // clear input buffer to restore cin to a usable state
+        cin.ignore(INT_MAX, '\n'); // ignore last input
+
+        cout << "You have entered an invalid character." << endl;
+        cout << "Please enter a valid Loan Amount in PHP." << endl ;
+        cout << "You are to go back to entering your Monthly Salary." << endl;
+        blankLine();
+        createLoanAmount();
+    }
     if (users[userNumber].loanUserAmount <= users[userNumber].loanMaxPossibleLoan && users[userNumber].loanUserAmount > 0) {
         cout << "You can now proceed to the next step." << endl;
         blankLine();
     }
     if (users[userNumber].loanUserAmount >= users[userNumber].loanMaxPossibleLoan) {
-        cout << "The amount of loan of " << users[userNumber].loanUserAmount << " PHP that you have entered is not qualified since it is above the maximum possible loan based on your salary." << endl;
-        cout << "Please enter a valid loan amount that is below your maximum possible loan which is ." << endl;
-        cout << "You are to go back to entering your monthly Salary." << endl;
+        cout << "The amount of loan of " << users[userNumber].loanUserAmount << " PHP that you have entered is not qualified." << endl;
+        cout << "Since it is above the maximum possible loan of " << users[userNumber].loanMaxPossibleLoan << " PHP which is twice your salary." << endl;
+        cout << "Please enter a valid loan amount that is below your maximum possible." << endl;
+        cout << "You are to go back to entering your Monthly Salary." << endl;
         blankLine();
         createLoanAmount();
     }
-    if (users[userNumber].loanUserAmount < 0) {
+    if (users[userNumber].loanUserAmount <= 0) {
         cout << "The amount of loan of " << users[userNumber].loanUserAmount << " PHP that you have entered is invalid since it is negative." << endl;
         cout << "Please enter a valid loan amount." << endl ;
-        cout << "You are to go back to entering your monthly Salary." << endl;
+        cout << "You are to go back to entering your Monthly Salary." << endl;
         blankLine();
         createLoanAmount();
     }
-    // Error Handling for value if the value entered is not int should be a function that can be used by other void functions
 }
 
-//void
+void printLoanChart()
+{
+    cout << "Loan Duration Chart based on Loan Amount List" << endl;
+    cout << "Format = Loan Amount : Maximum Number of Months " << endl;
+    cout << "Loan >= 100000 PHP            : 24 Months" << endl;
+    cout << "50000 PHP < Loan < 100000 PHP : 18 Months" << endl;
+    cout << "Loan < 50000 PHP              : 12 Months" << endl;
+}
+
+void createLoanDuaration() // First
+{
+    cout << "You are to base your loan in these chart." << endl;
+    printLoanChart();
+    blankLine();
+
+    cout << "Please enter your Loan Duration in Months: ";
+    cin >> users[userNumber].loanUserDuration;
+
+    if (cin.fail()) {
+        cin.clear(); // clear input buffer to restore cin to a usable state
+        cin.ignore(INT_MAX, '\n'); // ignore last input
+
+        cout << "Please enter a valid Loan Duration." << endl ;
+        cout << "You are to go back to entering your Loan Duration." << endl;
+        createLoanAmount();
+    }
+
+    if (users[userNumber].loanUserAmount < 0) { // Error Handling if Negative int is entered
+        cout << "The amount of loan of " << users[userNumber].loanUserAmount << " PHP that you have entered is invalid since it is negative." << endl;
+        cout << "Please enter a valid loan amount." << endl ;
+        cout << "You are to go back to entering your Loan Duration." << endl;
+        blankLine();
+        createLoanDuaration();
+    }
+
+    //users[userNumber].loanUserAmount
+}
+
+void printLoanTotal() // Second
+{
+    // Output of this needs to be in fucntion form
+    cout << "Loan Total is " << users[userNumber].loanUserAmount + (users[userNumber].loanUserAmount* 0.15) << endl;
+}
+
+void confirmLoan() // Third
+{
+
+}
 
 int main()
 {
@@ -135,6 +210,7 @@ int main()
     // Fourth Option is how much money the Service Maid
     // Message that will appear when the loan is fully paid upon the final payment paid
     // If possible create a way to create, read, update, delete data
+    // If int entered is not a number or int; use (isdigit())
 
     /*
     Program Structure
@@ -166,13 +242,9 @@ int main()
     //confirmUserDeatails();
 
     createLoanAmount();
-
-    cout << "Loan Duration (6 Months or 12 Months): ";
-    cin >> users[userNumber].loanUserDuration;
-    //cout << users[userNumber].loanUserDuration << endl;
-
-    // Output of this needs to be in fucntion form
-    cout << "Loan Total is " << users[userNumber].loanUserAmount + (users[userNumber].loanUserAmount* 0.15) << endl;
+    createLoanDuaration();
+    printLoanTotal();
+    confirmLoan();
 
     // Computes for Monthly Due for userNumber = amount needed to pay
     users[userNumber].loanUserMonthlyDue = (users[userNumber].loanUserAmount + (users[userNumber].loanUserAmount* 0.15)) / users[userNumber].loanUserDuration;
