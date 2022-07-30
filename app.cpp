@@ -1,24 +1,25 @@
 #include <iostream>
 #include <climits> // for INT_MAX limits
 using namespace std;
-
-/*
+/* For cin >> int type if input has a foreign char
 if (cin.fail()) {
     cin.clear(); // clear input buffer to restore cin to a usable state
     cin.ignore(INT_MAX, '\n'); // ignore last input
     createLoanAmount();
 }
 */
-
-const int loanBracketAmount[2] = {50000, 100000};
-const int loanDurations[3] = {12,18,24};
-const int loanMaxDuration = 24; // Was 24, Trying 5 Years || 60 Months
 const int totalUsers = 5; // Max Users this should be easily changeable and would not break anything
+int userNumber = 0;
 
 const int minAgeLoan = 20;
-const int maxLoanMultiplier = 2;
 
-int userNumber = 0;
+const int maxLoanMultiplier = 2;
+const int loanBracketAmount[2] = {50000, 100000};
+const int loanMaxDuration = 24; // Was 24, Trying 5 Years || 60 Months
+const int loanDurations[3] = {12,18,24};
+
+const float loanInterestRate = 0.05;
+const int loanInterestRateDisplay = 5;
 
 struct userInfo {
     //bool userGenerated; // This is needed
@@ -31,6 +32,8 @@ struct userInfo {
     int loanMaxPossibleLoan;
     int loanUserAmount;
     int loanUserDuration;
+    int loanTotalWithInterest;
+
     int loanUserMonthlyDue;
     string loanUserStatus; // Paid, Ongoing & None
     bool loanNumberMonthsPaid[loanMaxDuration];
@@ -114,6 +117,7 @@ void createLoanAmount()
 
     users[userNumber].loanMaxPossibleLoan = users[userNumber].monthlySalary * maxLoanMultiplier;
     cout << "Based on your given monthly Salary of, " << users[userNumber].monthlySalary << " PHP the maximum amount of loan possible is " << users[userNumber].loanMaxPossibleLoan << " PHP." << endl;
+    cout << "Take note that interest is still not included which is " << loanInterestRateDisplay << "% added to your desired Loan Amount." << endl;
     cout << "How much would you like to loan in PHP? ";
     cin >> users[userNumber].loanUserAmount;
     blankLine();
@@ -202,19 +206,16 @@ void createLoanDuaration()
 void evaluateLoanDuration()
 {
     if (users[userNumber].loanUserAmount >= loanBracketAmount[1] && users[userNumber].loanUserDuration <= loanDurations[2]) {
-        cout << "apple" << endl;
         cout << "Your loan of " << users[userNumber].loanUserAmount << " PHP for " << users[userNumber].loanUserDuration << " Months is possible." << endl;
         cout << "You are now set for you loan to be computed." << endl;
         blankLine();
     }
     else if (users[userNumber].loanUserAmount < loanBracketAmount[1] && users[userNumber].loanUserAmount >= loanBracketAmount[0] && users[userNumber].loanUserDuration <= loanDurations[1]) {
-        cout << "banana" << endl;
-        cout << "Your loan of " << users[userNumber].loanUserAmount << " PHP for " << users[userNumber].loanUserDuration << " Months is possible." << endl;
+        cout << "Your loan of    " << users[userNumber].loanUserAmount << " PHP for " << users[userNumber].loanUserDuration << " Months is possible." << endl;
         cout << "You are now set for you loan to be computed." << endl;
         blankLine();
     }
     else if (users[userNumber].loanUserAmount < loanBracketAmount[0] && users[userNumber].loanUserDuration <= loanDurations[0]) {
-        cout << "carrot" << endl;
         cout << "Your loan of " << users[userNumber].loanUserAmount << " PHP for " << users[userNumber].loanUserDuration << " Months is possible." << endl;
         cout << "You are now set for you loan to be computed." << endl;
         blankLine();
@@ -227,17 +228,27 @@ void evaluateLoanDuration()
     }
 }
 
-void evaluateLoan()
+void evaluateLoanTotal()
 {
+    cout << "Based on the details you have given us." << endl;
+    cout << "Loan Amount: " << users[userNumber].loanUserAmount << " PHP" << endl;
+    cout << "Loan Duration: " << users[userNumber].loanUserDuration << " Months" << endl;
 
+    users[userNumber].loanTotalWithInterest = users[userNumber].loanUserAmount + (users[userNumber].loanUserAmount * loanInterestRate);
+    cout << "The total amount of the loan we can give with interest is " << users[userNumber].loanTotalWithInterest << " PHP."<< endl;
+    blankLine();
+}
 
-    // This function will add the interest
+void evaluateLoanMonthly()
+{
+    users[userNumber].loanUserMonthlyDue = users[userNumber].loanTotalWithInterest / users[userNumber].loanUserDuration;
+    cout << "This is the amount you need to pay each month: " << users[userNumber].loanUserMonthlyDue << endl;
+    blankLine();
 }
 
 void printLoanTotalWithList() // Second
 {
     // Output of this needs to be in fucntion form
-    cout << "Loan Total is " << users[userNumber].loanUserAmount + (users[userNumber].loanUserAmount* 0.15) << endl;
 }
 
 void confirmLoan() // Third
@@ -288,21 +299,19 @@ int main()
     Will Return to this part after the process of each option
     */
 
-    // TO DO: 29/07/2022
-    // Finish the System without error handling yet
-
-    //enterUserDetails();
-    //confirmUserDeatails();
+    enterUserDetails();
+    confirmUserDeatails();
 
     createLoanAmount();
     createLoanDuaration();
     evaluateLoanDuration();
+
+    evaluateLoanTotal();
+    evaluateLoanMonthly();
+
     printLoanTotalWithList();
     confirmLoan();
 
-    // Computes for Monthly Due for userNumber = amount needed to pay
-    users[userNumber].loanUserMonthlyDue = (users[userNumber].loanUserAmount + (users[userNumber].loanUserAmount* 0.15)) / users[userNumber].loanUserDuration;
-    cout << "Amount needed to pay per month: " << users[userNumber].loanUserMonthlyDue << endl;
 
     users[userNumber].loanUserStatus = "Ongoing";
     cout << "Your Loan Status is currently: " << users[userNumber].loanUserStatus << endl;
