@@ -229,6 +229,8 @@ void evaluateLoanDuration()
 
 void evaluateLoan()
 {
+
+
     // This function will add the interest
 }
 
