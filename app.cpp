@@ -657,6 +657,15 @@ int main()
 
             blankLine();
 
+        } else if (userChoice == "3") {
+            selectUser();
+            printLoanDetails();
+            evaluateRemainingDue();
+            printLoanBalanceList();
+
+        //} else if (userChoice == "4") {
+
+
         }else if (userChoice == "5") {
             cout << "Thank you for using our services." << endl;
             cout << "See you again." << endl;
