@@ -2,13 +2,7 @@
 #include <climits> // for INT_MAX limits
 #include <time.h>
 using namespace std;
-/* For cin >> int type if input has a foreign char
-if (cin.fail()) {
-    cin.clear(); // clear input buffer to restore cin to a usable state
-    cin.ignore(INT_MAX, '\n'); // ignore last input
-    createLoanAmount();
-}
-*/
+
 const int totalUsers = 5; // Max Users this should be easily changeable and would not break anything
 int userNumber;
 
@@ -24,7 +18,7 @@ const int loanInterestRateDisplay = 5;
 
 struct userInfo {
     int loanUserNumber;
-    bool userGenerated; // This is needed
+    bool userGenerated; 
 
     string firstName;
     string lastName;
@@ -48,7 +42,6 @@ void setAllUserNumber()
     for (int i=0; i < totalUsers; i++)
     {
         users[i].loanUserNumber = i;
-        //cout << users[i].loanUserNumber << endl;
     }
 }
 
@@ -233,11 +226,6 @@ void createLoanDuaration()
         blankLine();
         createLoanDuaration();
     }
-    // error handling solutions
-    // loan duration & amount is zero: solved
-    // loan duration > 24: solved
-    // loan dur & amt is not int: solved
-    // max amount of loan bound: solved
 }
 
 void evaluateLoanDuration()
@@ -286,7 +274,6 @@ void evaluateLoanMonthly()
     for (int i=0; i < users[userNumber].loanUserDuration; i++) // sets nummonthsPaids arr to all false up to loan user duration
     {
         users[userNumber].loanNumberMonthsPaid[i] = false;
-        //cout << users[userNumber].loanNumberMonthsPaid[i] << endl; // to delete upon done; used for debugging purpose
     }
 }
 
@@ -577,47 +564,6 @@ int main()
     */
 
     setAllUserNumber(); // Sets a numbered id for every user
-    /*
-    // Mock User Details for Option #2
-    users[1].userGenerated = true;
-
-    users[1].firstName = "Jenloke";
-    users[1].lastName = "Magbojos";
-    users[1].age = 31;
-    users[1].monthlySalary = 20000;
-
-    users[1].loanUserDuration = 10;
-    users[1].loanTotalWithInterest = 5000;
-
-    users[1].loanUserMonthlyDue = 500;
-    users[1].loanUserStatus = "Ongoing"; // Paid, Ongoing
-    //loanNumberMonthsPaid[loanMaxDuration];
-    users[1].loanNumberMonthsPaid[0] = true; // two months paid
-    users[1].loanNumberMonthsPaid[1] = true;
-
-    //for (int i=0; i < users[1].loanUserDuration; i++ ) {
-    //    users[1].loanNumberMonthsPaid[i] = true;
-    //}
-
-    users[2].userGenerated = true;
-
-    users[2].firstName = "Jenloke";
-    users[2].lastName = "Magbojos";
-    users[2].age = 31;
-    users[2].monthlySalary = 20000;
-
-    users[2].loanUserDuration = 3;
-    users[2].loanTotalWithInterest = 3000;
-
-    users[2].loanUserMonthlyDue = 1000;
-    users[2].loanUserStatus = "Ongoing"; // Paid, Ongoing
-    //loanNumberMonthsPaid[loanMaxDuration];
-    users[2].loanNumberMonthsPaid[0] = true; // two months paid
-    users[2].loanNumberMonthsPaid[1] = true;
-    */
-    //for (int i=0; i < totalUsers; i++) { // set user generated to true
-    //    users[i].userGenerated = true;
-    //}
 
     string userChoice;
     int currentUsers;
