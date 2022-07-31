@@ -1,5 +1,6 @@
 #include <iostream>
 #include <climits> // for INT_MAX limits
+#include <time.h>
 using namespace std;
 /* For cin >> int type if input has a foreign char
 if (cin.fail()) {
@@ -38,6 +39,8 @@ struct userInfo {
     int loanUserMonthlyDue;
     string loanUserStatus; // Paid, Ongoing
     bool loanNumberMonthsPaid[loanMaxDuration];
+    int loanMonthRemaining;
+    int loanAmountRemaining;
 } users[totalUsers];
 
 void setAllUserNumber()
@@ -45,11 +48,11 @@ void setAllUserNumber()
     for (int i=0; i < totalUsers; i++)
     {
         users[i].loanUserNumber = i;
-        cout << users[i].loanUserNumber << endl;
+        //cout << users[i].loanUserNumber << endl;
     }
 }
 
-void blankLine() { cout << endl; }
+void blankLine() { cout << "===========================================================" << endl; }
 
 void setUserNumber()
 {
@@ -69,7 +72,21 @@ void enterUserDetails()
     cin >> users[userNumber].age;
 
     blankLine();
+    if (cin.fail()) { // If the value creates an infinite loop
+        cin.clear(); // clear input buffer to restore cin to a usable state
+        cin.ignore(INT_MAX, '\n'); // ignore last input
 
+        cout << "Please enter a valid Age, where it just contains numbers." << endl ;
+        cout << "You are to go back to entering your User Details." << endl;
+        blankLine();
+        enterUserDetails();
+    }
+    if (users[userNumber].monthlySalary < 0) { // if negative
+        cout << "Please enter a valid Age not negative and above age requirements (" << minAgeLoan << ")." << endl ;
+        cout << "You are to go back to entering your User Details." << endl;
+        blankLine();
+        enterUserDetails();
+    }
     if (users[userNumber].age < minAgeLoan) { // To enter Details again if age requirement is not met
         cout << "You have not met the age requirements for a loan." << endl;
         cout << "The minimum age that can loan is " << minAgeLoan << "." << endl;
@@ -111,7 +128,6 @@ void confirmUserDeatails() // Still need char error handling if entered is not Y
     }
 }
 
-// To add Called Again Variable if User wants to go back to this function; bool funcCalledAgain = False;
 void createLoanAmount()
 {
     cout << "Please write your Monthly Salary to determine the " << endl;
@@ -286,7 +302,7 @@ void printLoanDetails()
     cout << "Loan Details" << endl;
     cout << "Monthly Salary: " << users[userNumber].monthlySalary << " PHP" << endl;
     cout << "Loan Amount with Interest: " << users[userNumber].loanTotalWithInterest << " PHP" << endl;
-    cout << "Loan Duration: " << users[userNumber].loanUserDuration << " PHP" << endl;
+    cout << "Loan Duration: " << users[userNumber].loanUserDuration << " Months" << endl;
     cout << "Monthly Due: " << users[userNumber].loanUserMonthlyDue << " PHP" << endl;
     blankLine();
 
@@ -319,7 +335,7 @@ void confirmLoan()
     cout << "Press Y to confirm your loan or the number one of the choice above if you wish to change something: ";
 
     string userAnswerConfirmLoan;
-    cin >> userAnswerConfirmLoan;
+    getline(cin >> ws, userAnswerConfirmLoan);
     blankLine();
 
     if (userAnswerConfirmLoan == "Y") {
@@ -355,13 +371,13 @@ void printLoanStatus()
     blankLine();
 }
 
-void printLoanBalance() // prints all monthly payments to be maid
+void printLoanBalanceList() // prints all monthly payments to be maid
 {
     // Prints Loan Status per month
     // False: Month is not Paid || True: Month is Paid
     // Prints Amount Remaining
 
-    cout << "Here is the list of Months in the Loan that had been paid." << endl;
+    cout << "Here is the list of Months in the Loan that had been paid and not." << endl;
     blankLine();
 
     for (int i=0; i < users[userNumber].loanUserDuration; i++)
@@ -374,10 +390,12 @@ void printLoanBalance() // prints all monthly payments to be maid
         }
     }
     blankLine();
+    cout << "You have " << users[userNumber].loanAmountRemaining << " PHP left in your loan." << endl;
+    blankLine();
 }
 
 // For Option 2
-void clearUserDetails()
+void clearUserDetails() // Will be called once loan stautus is set to paid
 {
 
 }
@@ -387,36 +405,133 @@ void selectUser() // userNumber is alway -1
     int inputSelectUser;
     cout << "Please enter the User Number that was assigned to you: ";
     cin >> inputSelectUser;
+    blankLine();
 
     userNumber = inputSelectUser - 1;
 
     if (inputSelectUser < totalUsers && inputSelectUser > 0 && users[userNumber].userGenerated == true) {
-        cout << "You have selected user x; prints out user details" << endl;
-        cout << userNumber << endl;
-    }else if (inputSelectUser > totalUsers) {
-        cout << "Your input is greater than the maximum users available, therefore it is not valid." << endl;
-        cout << userNumber << endl;
-    }else if (users[userNumber].userGenerated == false) {
+        cout << "You have selected User " << inputSelectUser << endl;
+        blankLine();
+
+    }else if (users[userNumber].userGenerated == false && inputSelectUser < totalUsers && inputSelectUser > 0) {
         cout << "The user number you have inputted is not yet generated." << endl;
-        cout << userNumber << endl;
+        blankLine();
+        selectUser();
+    }
+    else if (inputSelectUser > totalUsers) {
+        cout << "Your input is greater than the maximum users available, therefore it is not valid." << endl;
+        blankLine();
+        selectUser();
+    }else {
+        cout << "The number you have inputted is invalid." << endl;
+        blankLine();
+        selectUser();
     }
 }
 
+void evaluateRemainingDue()
+{
+    int evalMonthRemaining = users[userNumber].loanUserDuration;
+    int evalLoanRemaining = users[userNumber].loanTotalWithInterest;
+
+    for (int i=0; i < users[userNumber].loanUserDuration; i++) { //true is paid; false is not
+        if (users[userNumber].loanNumberMonthsPaid[i] == true) {
+            evalMonthRemaining--; // for month
+            evalLoanRemaining =  evalLoanRemaining - users[userNumber].loanUserMonthlyDue; // for amount
+        }
+    }
+    users[userNumber].loanAmountRemaining = evalLoanRemaining;
+    users[userNumber].loanMonthRemaining = evalMonthRemaining;
+}
+
+int loanPayment;
+int loanChange;
+
 void createMonthlyDue()
 {
-    cout << "";
+    cout << "Based on data represented above" << endl;
+    cout << "You have " << users[userNumber].loanMonthRemaining <<" Months remaining on your loan" << endl;
+    cout << "Your Monthly Due: " << users[userNumber].loanUserMonthlyDue << " PHP" << endl;
+    blankLine();
+    cout << "You can only pay just one month worth of due for your loan." << endl;
+    cout << "If you are to pay two or more months off of your loan you are to use this option again." << endl;
 
-    cout << "If you are to pay two or more months off of your loan you are to use this option again.";
+    // Make Payment: Receipt System
+    cout << "How much would you like to pay: ";
+    cin >> loanPayment;
+    blankLine();
+
+    if (cin.fail()) { // If the value creates an infinite loop
+        cin.clear(); // clear input buffer to restore cin to a usable state
+        cin.ignore(INT_MAX, '\n'); // ignore last input
+
+        cout << "Please enter a valid amount, where it just contains numbers." << endl ;
+        cout << "You are to go back to paying you monthly due." << endl;
+        blankLine();
+        createMonthlyDue();
+    }
+
+    if (loanPayment >= users[userNumber].loanUserMonthlyDue) {
+        cout << "You are now to confirm your monthly payment for just one month." << endl;
+        blankLine();
+    } else if (loanPayment < users[userNumber].loanUserMonthlyDue && loanPayment > 0) {
+        cout << "The amount you have entered is below the required monthly due." << endl;
+        cout << "You are to go back to paying you monthly due." << endl;
+        blankLine();
+        createMonthlyDue();
+    } else if (loanPayment <= 0) {
+        cout << "The amount you have entered is below or equal to zero." << endl;
+        cout << "You are to go back to paying you monthly due." << endl;
+        blankLine();
+        createMonthlyDue();
+    }
 }
 
 void confirmMonthlyDue()
 {
+    cout << "User " << users[userNumber].loanUserNumber + 1<< ", named " << users[userNumber].firstName << " " << users[userNumber].lastName << "," << endl;
+    cout << "Your monthly due of " << users[userNumber].loanUserMonthlyDue << " PHP is to be paid off with " << loanPayment << " PHP." << endl;
+    cout << "Do you confirm this or you want to enter your loan payment again [Y for Yes or N for No]? ";
 
+    string answerConfirmMonthlyDue;
+    getline(cin >> ws, answerConfirmMonthlyDue);
+    blankLine();
+
+    if (answerConfirmMonthlyDue == "Y") {
+        cout << "We are to print your receipt for your payment, this includes your change if you paid higher than your loan due." << endl;
+        loanChange = loanPayment - users[userNumber].loanUserMonthlyDue;
+
+        for (int i=0; i < users[userNumber].loanUserDuration; i++)
+        {
+            if (users[userNumber].loanNumberMonthsPaid[i] == false) {
+                users[userNumber].loanNumberMonthsPaid[i] = true;
+                break;
+            }
+        }
+        blankLine();
+    }
+    else if (answerConfirmMonthlyDue == "N") {
+        cout << "You are to go back to paying your monthly due." << endl;
+        blankLine();
+        createMonthlyDue();
+    } else {
+        cout << "You have entered an invalid answer." << endl;
+        cout << "You are to confirm your loan payment again." << endl;
+        blankLine();
+        confirmMonthlyDue();
+    }
 }
 
-void printMonthyDue()
-{
+time_t my_time = time(NULL);
 
+void printMonthyDueReceipt()
+{
+    cout << "Date: " << ctime(&my_time);
+    cout << "User #"<< users[userNumber].loanUserNumber << endl;
+    cout << "Month Due: " << users[userNumber].loanUserMonthlyDue << " PHP" << endl;
+    cout << "Amount Paid: " << loanPayment << " PHP" << endl;
+    cout << "Change: " << loanChange << " PHP" << endl;
+    blankLine();
 }
 
 
@@ -462,66 +577,101 @@ int main()
 
     setAllUserNumber(); // Sets a numbered id for every user
 
-    cout << "Select based on the choices below what would you like to do" << endl;
-    cout << "[1] Create a Loan" << endl;
-    cout << "[2] Pay Monthly Due" << endl;
-    cout << "[3] Check Loan Status" << endl;
-    cout << "[4] Print " << endl;
+    // Mock User Details for Option #2
+    users[1].userGenerated = true;
 
-    int userChoice;
-    cout << "Just select the corresponding number: ";
-    cin >> userChoice;
-    blankLine();
+    users[1].firstName = "Jenloke";
+    users[1].lastName = "Magbojos";
+    users[1].age = 31;
+    users[1].monthlySalary = 20000;
 
-    if (userChoice == 1) {
-        for (int i=0; i < totalUsers; i++)
-        {
-            if (users[i].userGenerated == false) {
-                setUserNumber();
+    users[1].loanUserDuration = 10;
+    users[1].loanTotalWithInterest = 5000;
 
-                enterUserDetails();
-                confirmUserDeatails();
+    users[1].loanUserMonthlyDue = 500;
+    users[1].loanUserStatus = "Ongoing"; // Paid, Ongoing
+    //loanNumberMonthsPaid[loanMaxDuration];
+    users[1].loanNumberMonthsPaid[0] = true; // two months paid
+    users[1].loanNumberMonthsPaid[1] = true;
 
-                createLoanAmount();
-                createLoanDuaration();
-                evaluateLoanDuration();
+    //for (int i=0; i < users[1].loanUserDuration; i++ ) {
+    //    users[1].loanNumberMonthsPaid[i] = true;
+    //}
 
-                evaluateLoanTotal();
-                evaluateLoanMonthly();
+    string userChoice;
 
-                printLoanDetails();
-                confirmLoan();
-                printLoanStatus();
-                printLoanBalance();
+    while(true) {
+        cout << "Select from one of the services offered below" << endl;
+        cout << "[1] Create New Loan" << endl;
+        cout << "[2] Pay Monthly Due" << endl;
+        cout << "[3] Check Users Loan Status" << endl;
+        cout << "[4] Print " << endl;
+        cout << "[5] Exit" << endl;
+        blankLine();
 
+        cout << "You can just go back to the main menu on the" << endl; cout << "confirmation or finalization part of certain options." << endl;
+        cout << "Just select the corresponding number: ";
+        getline(cin >> ws, userChoice);
+        blankLine();
+
+        if (userChoice == "1") {
+            for (int i=0; i < totalUsers; i++)
+            {
+                if (users[i].userGenerated == false) {
+                    setUserNumber();
+
+                    enterUserDetails();
+                    confirmUserDeatails();
+
+                    createLoanAmount();
+                    createLoanDuaration();
+                    evaluateLoanDuration();
+                    evaluateLoanTotal();
+                    evaluateLoanMonthly();
+                    evaluateRemainingDue();
+
+                    printLoanDetails();
+                    confirmLoan(); // need continue statement to go back to menu
+                    printLoanStatus();
+                    printLoanBalanceList();
+
+                    blankLine();
+                }
+                userNumber++;
             }
-            userNumber++;
-        }
-    }else if (userChoice == 2) {
-        selectUser();
-    }else {
 
+        }else if (userChoice == "2") {
+            selectUser();
+            printLoanDetails();
+            printLoanStatus();
+
+            evaluateRemainingDue();
+            printLoanBalanceList();
+
+            createMonthlyDue();
+            confirmMonthlyDue();
+            printMonthyDueReceipt();
+
+            evaluateRemainingDue();
+            printLoanBalanceList();
+
+            blankLine();
+
+        }else if (userChoice == "5") {
+            cout << "Thank you for using our services." << endl;
+            cout << "See you again." << endl;
+            break;
+
+        }else {
+            cout << "You have entered invalid character/s." << endl;
+            cout << "Please enter a valid number." << endl;
+            cout << "You are to go back to choosing a service." << endl;
+            blankLine();
+        }
     }
 
     /*
-    // Make Payment: Receipt System
-    int loanPayment;
-    cout << "How much would you like to pay: ";
-    cin >> loanPayment;
-
-    if (users[userNumber].loanUserMonthlyDue == loanPayment) {
-        for (int i=0; i < users[userNumber].loanUserDuration; i++)
-        {
-            if (users[userNumber].loanNumberMonthsPaid[i] == true) {
-                users[userNumber].loanNumberMonthsPaid[i] = false;
-                cout << "Month " << i+1 << ": Payment Found of " << users[userNumber].loanUserMonthlyDue << " PHP" << endl;
-                break;
-            }
-        }
-    }
-    cout << endl;
-
-
+    // for confirm monthlyDue
     // Checks array if all members of it is true, this will be a function
     int j = 0;
     for (int i=0; i < users[userNumber].loanUserDuration; i++)
