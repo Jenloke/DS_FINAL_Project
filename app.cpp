@@ -377,11 +377,48 @@ void printLoanBalance() // prints all monthly payments to be maid
 }
 
 // For Option 2
-void createPayment()
-{}
+void clearUserDetails()
+{
 
-void confirmPayment()
-{}
+}
+
+void selectUser() // userNumber is alway -1
+{
+    int inputSelectUser;
+    cout << "Please enter the User Number that was assigned to you: ";
+    cin >> inputSelectUser;
+
+    userNumber = inputSelectUser - 1;
+
+    if (inputSelectUser < totalUsers && inputSelectUser > 0 && users[userNumber].userGenerated == true) {
+        cout << "You have selected user x; prints out user details" << endl;
+        cout << userNumber << endl;
+    }else if (inputSelectUser > totalUsers) {
+        cout << "Your input is greater than the maximum users available, therefore it is not valid." << endl;
+        cout << userNumber << endl;
+    }else if (users[userNumber].userGenerated == false) {
+        cout << "The user number you have inputted is not yet generated." << endl;
+        cout << userNumber << endl;
+    }
+}
+
+void createMonthlyDue()
+{
+    cout << "";
+
+    cout << "If you are to pay two or more months off of your loan you are to use this option again.";
+}
+
+void confirmMonthlyDue()
+{
+
+}
+
+void printMonthyDue()
+{
+
+}
+
 
 int main()
 {
@@ -389,6 +426,7 @@ int main()
     blankLine();
     userNumber = 0;
 
+    /*
     // There will be 2 options here
     // Create a loan & Pay one month off a loan
     // If Possible Cancel a Loan; will be included in Option 2
@@ -397,8 +435,7 @@ int main()
     // Message that will appear when the loan is fully paid upon the final payment paid
     // If possible create a way to create, read, update, delete data
     // Create a Minimum amount of loan
-
-    // if userNumber == 0 no user is present
+    */
 
     /*
     Program Structure
@@ -423,43 +460,47 @@ int main()
     Will Return to this part after the process of each option
     */
 
-    setAllUserNumber(); // Sets somewhat an id for every user
+    setAllUserNumber(); // Sets a numbered id for every user
 
-    //int userChoice;
-    //cout << "Your Choice: ";
-    //cin >> userChoice;
-    //blankLine();
+    cout << "Select based on the choices below what would you like to do" << endl;
+    cout << "[1] Create a Loan" << endl;
+    cout << "[2] Pay Monthly Due" << endl;
+    cout << "[3] Check Loan Status" << endl;
+    cout << "[4] Print " << endl;
 
-    //if (userChoice == 1) {
-    // for loop in struct to check available slots
-    // should just be if statement that checks for false value
+    int userChoice;
+    cout << "Just select the corresponding number: ";
+    cin >> userChoice;
+    blankLine();
 
-    /*for (int i=0; i < totalUsers; i++) {
-        users[i].userGenerated = true;
-    }*/
+    if (userChoice == 1) {
+        for (int i=0; i < totalUsers; i++)
+        {
+            if (users[i].userGenerated == false) {
+                setUserNumber();
 
-    for (int i=0; i < totalUsers; i++)
-    {
-        if (users[i].userGenerated == false) {
-            setUserNumber();
+                enterUserDetails();
+                confirmUserDeatails();
 
-            enterUserDetails();
-            confirmUserDeatails();
+                createLoanAmount();
+                createLoanDuaration();
+                evaluateLoanDuration();
 
-            createLoanAmount();
-            createLoanDuaration();
-            evaluateLoanDuration();
+                evaluateLoanTotal();
+                evaluateLoanMonthly();
 
-            evaluateLoanTotal();
-            evaluateLoanMonthly();
+                printLoanDetails();
+                confirmLoan();
+                printLoanStatus();
+                printLoanBalance();
 
-            printLoanDetails();
-            confirmLoan();
-            printLoanStatus();
-            printLoanBalance();
-
+            }
+            userNumber++;
         }
-        userNumber++;
+    }else if (userChoice == 2) {
+        selectUser();
+    }else {
+
     }
 
     /*
