@@ -397,7 +397,28 @@ void printLoanBalanceList() // prints all monthly payments to be maid
 // For Option 2
 void clearUserDetails() // Will be called once loan stautus is set to paid
 {
+    users[userNumber].userGenerated = false; // This is needed
 
+    users[userNumber].firstName = "";
+    users[userNumber].lastName = "";
+    users[userNumber].age = 0;
+    users[userNumber].monthlySalary = 0;
+
+    users[userNumber].loanMaxPossibleLoan = 0;
+    users[userNumber].loanUserAmount = 0;
+    users[userNumber].loanUserDuration = 0;
+    users[userNumber].loanTotalWithInterest = 0;
+
+    users[userNumber].loanUserMonthlyDue = 0;
+    users[userNumber].loanUserStatus = ""; // Paid, Ongoing
+
+    for (int i=0; i < loanMaxDuration; i++)
+    {
+        users[userNumber].loanNumberMonthsPaid[i] = false;
+    }
+
+    users[userNumber].loanMonthRemaining = 0;
+    users[userNumber].loanAmountRemaining = 0;
 }
 
 void selectUser() // userNumber is alway -1
@@ -499,6 +520,7 @@ void confirmMonthlyDue()
 
     if (answerConfirmMonthlyDue == "Y") {
         cout << "We are to print your receipt for your payment, this includes your change if you paid higher than your loan due." << endl;
+        blankLine();
         loanChange = loanPayment - users[userNumber].loanUserMonthlyDue;
 
         for (int i=0; i < users[userNumber].loanUserDuration; i++)
@@ -508,7 +530,6 @@ void confirmMonthlyDue()
                 break;
             }
         }
-        blankLine();
     }
     else if (answerConfirmMonthlyDue == "N") {
         cout << "You are to go back to paying your monthly due." << endl;
@@ -522,10 +543,9 @@ void confirmMonthlyDue()
     }
 }
 
-time_t my_time = time(NULL);
-
 void printMonthyDueReceipt()
 {
+    time_t my_time = time(NULL);
     cout << "Date: " << ctime(&my_time);
     cout << "User #"<< users[userNumber].loanUserNumber << endl;
     cout << "Month Due: " << users[userNumber].loanUserMonthlyDue << " PHP" << endl;
@@ -534,49 +554,30 @@ void printMonthyDueReceipt()
     blankLine();
 }
 
+int evaluateCurrentUsers()
+{
+    int funcCurrentUsers = 0;
+    for (int i=0; i < totalUsers; i++)
+    {
+        if (users[i].userGenerated == true) {
+            funcCurrentUsers++;
+        }
+    }
+    return funcCurrentUsers;
+}
 
 int main()
 {
-    cout << "Welcome to Micro Lending Services" << endl;
-    blankLine();
     userNumber = 0;
 
     /*
-    // There will be 2 options here
-    // Create a loan & Pay one month off a loan
-    // If Possible Cancel a Loan; will be included in Option 2
-    // Third Option will be show what months are already paid
     // Fourth Option is how much money the Service Maid
-    // Message that will appear when the loan is fully paid upon the final payment paid
     // If possible create a way to create, read, update, delete data
     // Create a Minimum amount of loan
     */
 
-    /*
-    Program Structure
-    Option 1: Create a new Loan;
-        Condition if there is an available slot in struct array,
-        else it is not possible unless a loan from the list turned to fully paid
-    Option 2: Pay a month off a loan
-
-        A compromise would be user will write off how many months is to be paid off
-        based on what amount and month the user wrote
-
-        Will print a receipt after payment and prints all months that have been paid
-
-        If possible to pay off multiple months off a loan
-
-        Also loan is to be deleted when all bool is turned to false then print like congrats on paying your loan, hope we see you again here
-
-    Option 3: Show your Loan; Simple Seacrh and Print Part
-    Option 4: Show How much the Micro Lending Service Made; Simple Print
-    Option 5: Exit
-
-    Will Return to this part after the process of each option
-    */
-
     setAllUserNumber(); // Sets a numbered id for every user
-
+    /*
     // Mock User Details for Option #2
     users[1].userGenerated = true;
 
@@ -598,18 +599,46 @@ int main()
     //    users[1].loanNumberMonthsPaid[i] = true;
     //}
 
+    users[2].userGenerated = true;
+
+    users[2].firstName = "Jenloke";
+    users[2].lastName = "Magbojos";
+    users[2].age = 31;
+    users[2].monthlySalary = 20000;
+
+    users[2].loanUserDuration = 3;
+    users[2].loanTotalWithInterest = 3000;
+
+    users[2].loanUserMonthlyDue = 1000;
+    users[2].loanUserStatus = "Ongoing"; // Paid, Ongoing
+    //loanNumberMonthsPaid[loanMaxDuration];
+    users[2].loanNumberMonthsPaid[0] = true; // two months paid
+    users[2].loanNumberMonthsPaid[1] = true;
+    */
+    //for (int i=0; i < totalUsers; i++) { // set user generated to true
+    //    users[i].userGenerated = true;
+    //}
+
     string userChoice;
+    int currentUsers;
 
     while(true) {
+        cout << "Welcome to Micro Lending Services" << endl;
+        blankLine();
+
+        currentUsers = evaluateCurrentUsers();
+        cout << "Current Loanees: "<< currentUsers << endl;
+
         cout << "Select from one of the services offered below" << endl;
         cout << "[1] Create New Loan" << endl;
         cout << "[2] Pay Monthly Due" << endl;
         cout << "[3] Check Users Loan Status" << endl;
-        cout << "[4] Print " << endl;
+        cout << "[4] Print Loan Guide Chart" << endl;
         cout << "[5] Exit" << endl;
         blankLine();
 
-        cout << "You can just go back to the main menu on the" << endl; cout << "confirmation or finalization part of certain options." << endl;
+        cout << "You can just go back to the main menu on the" << endl;
+        cout << "confirmation or finalization part of certain options." << endl;
         cout << "Just select the corresponding number: ";
         getline(cin >> ws, userChoice);
         blankLine();
@@ -636,35 +665,72 @@ int main()
                     printLoanBalanceList();
 
                     blankLine();
+
+                    break;
                 }
                 userNumber++;
+                if (i == totalUsers-1) {
+                    cout << "All loan slots are occupied." << endl;
+                    blankLine();
+                    break;
+                }
             }
 
         }else if (userChoice == "2") {
-            selectUser();
-            printLoanDetails();
-            printLoanStatus();
+            if (currentUsers != 0) {
+                selectUser();
+                printLoanDetails();
+                printLoanStatus();
 
-            evaluateRemainingDue();
-            printLoanBalanceList();
+                evaluateRemainingDue();
+                printLoanBalanceList();
 
-            createMonthlyDue();
-            confirmMonthlyDue();
-            printMonthyDueReceipt();
+                createMonthlyDue();
+                confirmMonthlyDue();
+                printMonthyDueReceipt();
 
-            evaluateRemainingDue();
-            printLoanBalanceList();
+                evaluateRemainingDue();
+                printLoanBalanceList();
 
-            blankLine();
+                //Checks if all months are true then this will delete users[userNumber]
+                int j = 0;
+                for (int i=0; i < users[userNumber].loanUserDuration; i++)
+                {
+                    if (users[userNumber].loanNumberMonthsPaid[i] == true) {
+                        j++;
+                    }
+                }
+                if (j == users[userNumber].loanUserDuration) {
+                    printLoanStatus();
 
-        } else if (userChoice == "3") {
-            selectUser();
-            printLoanDetails();
-            evaluateRemainingDue();
-            printLoanBalanceList();
+                    cout << "You have finally paid off your loan." << endl;
+                    cout << "This receipt printed above is your final." << endl;
+                    cout << "Your loan, personal details and user number is to be deleted." << endl;
+                    cout << "Thank you for loaning at Micro Lending Services" << endl;
+                    cout << "Hope we see you again!!!" << endl;
 
-        //} else if (userChoice == "4") {
+                    clearUserDetails();
+                }
 
+                blankLine();
+            } else {
+                cout << "There are no loans in this curretn situation." << endl;
+                blankLine();
+            }
+
+        }else if (userChoice == "3") {
+            if (currentUsers != 0) {
+                selectUser();
+                printLoanDetails();
+                evaluateRemainingDue();
+                printLoanBalanceList();
+            } else {
+                cout << "There are no loans available to pay." << endl;
+                blankLine();
+            }
+
+        } else if (userChoice == "4") {
+            printLoanChart();
 
         }else if (userChoice == "5") {
             cout << "Thank you for using our services." << endl;
@@ -678,27 +744,6 @@ int main()
             blankLine();
         }
     }
-
-    /*
-    // for confirm monthlyDue
-    // Checks array if all members of it is true, this will be a function
-    int j = 0;
-    for (int i=0; i < users[userNumber].loanUserDuration; i++)
-    {
-        if (users[userNumber].loanNumberMonthsPaid[i] == true) {
-            j++;
-        }
-    }
-    if (j == users[userNumber].loanUserDuration) {
-        cout << "Loan is Paid" << endl;
-    }else {
-        cout << "Loan is not yet Paid" << endl;
-    }
-    // return j;
-    // return a value if equal to loanUserDuration will turn loanUserStatus = Paid
-    */
-
-    //userNumber++;
 
     return 0;
 }
