@@ -647,6 +647,7 @@ int main()
                     }
                 }
                 if (j == users[userNumber].loanUserDuration) {
+                    users[userNumber].loanUserStatus = "Paid";
                     printLoanStatus();
 
                     cout << "You have finally paid off your loan." << endl;
