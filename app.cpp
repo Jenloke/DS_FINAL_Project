@@ -100,7 +100,7 @@ void confirmUserDeatails() // Still need char error handling if entered is not Y
     string userAnswerUserDeatails;
     cout << "Please confirm that you have entered your correct Personal Details"<< endl;
     cout << "based on what is printed above? (Y/N) [Y for Yes while N for No]: ";
-    cin >> userAnswerUserDeatails;
+    getline(cin >> ws, userAnswerUserDeatails);
 
     if (userAnswerUserDeatails == "Y") {
         blankLine();
