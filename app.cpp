@@ -285,7 +285,7 @@ int evaluateCurrentUsers()
     return funcCurrentUsers;
 }
 
-void clearUserDetails() // Will be called once loan stautus is set to paid
+void clearUserDetails() // Will be called once loan stautus is set to paid or when back to menu option is chosen
 {
     users[userNumber].userGenerated = false; // This is needed
 
@@ -526,11 +526,6 @@ void createLoanDuaration()
         blankLine();
         createLoanDuaration();
     }
-    // error handling solutions
-    // loan duration & amount is zero: solved
-    // loan duration > 24: solved
-    // loan dur & amt is not int: solved
-    // max amount of loan bound: solved
 }
 
 void evaluateLoanDuration()
