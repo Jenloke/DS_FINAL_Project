@@ -699,6 +699,17 @@ void selectUser() // userNumber when evaluated should always be userNumber-1
 
     userNumber = inputSelectUser - 1;
 
+    if (cin.fail()) {
+        cin.clear(); // clear input buffer to restore cin to a usable state
+        cin.ignore(INT_MAX, '\n'); // ignore last input
+
+        cout << "You have entered an invalid character/s." << endl;
+        cout << "Please enter a valid User Number." << endl;
+        cout << "You are to go back to selecting your User Number." << endl;
+        blankLine();
+        selectUser();
+    }
+
     if (inputSelectUser < totalUsers && inputSelectUser > 0 && users[userNumber].userGenerated == true) {
         cout << "You have selected User " << inputSelectUser << endl;
         blankLine();
