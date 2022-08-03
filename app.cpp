@@ -93,7 +93,7 @@ int main()
     // If possible create a way to create, read, update, delete data
     */
 
-    /* Mock Data
+    /* //Mock Data
     // Mock User Details for Option #2
     users[1].userGenerated = true;
 
