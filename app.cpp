@@ -43,20 +43,11 @@ struct userInfo {
     int loanAmountRemaining;
 } users[totalUsers];
 
-void setAllUserNumber()
-{
-    for (int i=0; i < totalUsers; i++)
-    {
-        users[i].loanUserNumber = i;
-        //cout << users[i].loanUserNumber << endl;
-    }
-}
-
-void blankLine() { cout << "=========================================================================" << endl; }
-
 void mainFunction();
 
+void blankLine();
 void clearUserDetails();
+void setAllUserNumber();
 
 // Option #1 Functions
 void setUserNumber();
@@ -270,6 +261,20 @@ void mainFunction()
             cout << "You are to go back to choosing a service." << endl;
             blankLine();
         }
+    }
+}
+
+void blankLine() 
+{ 
+    cout << "=========================================================================" << endl; 
+}
+
+void setAllUserNumber()
+{
+    for (int i=0; i < totalUsers; i++)
+    {
+        users[i].loanUserNumber = i;
+        //cout << users[i].loanUserNumber << endl;
     }
 }
 
