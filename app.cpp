@@ -579,7 +579,6 @@ void evaluateLoanMonthly()
     for (int i=0; i < users[userNumber].loanUserDuration; i++) // sets nummonthsPaids arr to all false up to loan user duration
     {
         users[userNumber].loanNumberMonthsPaid[i] = false;
-        //cout << users[userNumber].loanNumberMonthsPaid[i] << endl; // to delete upon done; used for debugging purpose
     }
 }
 
@@ -598,8 +597,6 @@ void printLoanDetails()
     cout << "Loan Duration: " << users[userNumber].loanUserDuration << " Months" << endl;
     cout << "Monthly Due: " << users[userNumber].loanUserMonthlyDue << " PHP" << endl;
     blankLine();
-
-    // if loan is ongoing will call the void function that handles number of months paid
 }
 
 void confirmLoan()
