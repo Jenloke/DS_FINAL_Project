@@ -2,13 +2,7 @@
 #include <climits> // for INT_MAX limits
 #include <time.h>
 using namespace std;
-/* For cin >> int type if input has a foreign char
-if (cin.fail()) {
-    cin.clear(); // clear input buffer to restore cin to a usable state
-    cin.ignore(INT_MAX, '\n'); // ignore last input
-    createLoanAmount();
-}
-*/
+
 const int totalUsers = 5; // Max Users this should be easily changeable and would not break anything
 int userNumber;
 
@@ -16,7 +10,7 @@ const int minAgeLoan = 20;
 
 const int maxLoanMultiplier = 2;
 const int loanBracketAmount[2] = {50000, 100000};
-const int loanMaxDuration = 24; // Was 24, Trying 5 Years || 60 Months
+const int loanMaxDuration = 24; 
 const int loanDurations[3] = {12,18,24};
 
 const float loanInterestRate = 0.05;
@@ -24,7 +18,7 @@ const int loanInterestRateDisplay = 5;
 
 struct userInfo {
     int loanUserNumber;
-    bool userGenerated; // This is needed
+    bool userGenerated; // true for generated; false for not
 
     string firstName;
     string lastName;
@@ -79,12 +73,7 @@ int main()
     userNumber = 0;
     setAllUserNumber(); // Sets a numbered id for every user
 
-    /*
-    // Fourth Option is how much money the Service Made
-    // If possible create a way to create, read, update, delete data
-    */
-
-    /* //Mock Data
+    /* //Mock Data: used for testing
     // Mock User Details for Option #2
     users[1].userGenerated = true;
 
@@ -154,8 +143,8 @@ void mainFunction()
         cout << "[5] Exit" << endl;
         blankLine();
 
-        //cout << "You can just go back to the main menu on the" << endl;
-        //cout << "confirmation or finalization part of certain options." << endl;
+        cout << "You can just go back to the main menu on the" << endl;
+        cout << "confirmation or finalization part of certain options." << endl;
         cout << "Just select the corresponding number: ";
         getline(cin >> ws, userChoice);
         blankLine();
@@ -177,7 +166,7 @@ void mainFunction()
                     evaluateRemainingDue();
 
                     printLoanDetails();
-                    confirmLoan(); // need continue statement to go back to menu
+                    confirmLoan(); 
                     printLoanStatus();
                     printLoanBalanceList();
 
@@ -210,14 +199,14 @@ void mainFunction()
                 printLoanBalanceList();
 
                 //Checks if all months are true then this will delete users[userNumber]
-                int j = 0;
+                int monthsPaidCounter = 0;
                 for (int i=0; i < users[userNumber].loanUserDuration; i++)
                 {
                     if (users[userNumber].loanNumberMonthsPaid[i] == true) {
-                        j++;
+                        monthsPaidCounter++;
                     }
                 }
-                if (j == users[userNumber].loanUserDuration) {
+                if (monthsPaidCounter == users[userNumber].loanUserDuration) {
                     users[userNumber].loanUserStatus = "Paid";
                     printLoanStatus();
 
@@ -264,9 +253,9 @@ void mainFunction()
     }
 }
 
-void blankLine() 
-{ 
-    cout << "=========================================================================" << endl; 
+void blankLine()
+{
+    cout << "=========================================================================" << endl;
 }
 
 void setAllUserNumber()
@@ -274,7 +263,6 @@ void setAllUserNumber()
     for (int i=0; i < totalUsers; i++)
     {
         users[i].loanUserNumber = i;
-        //cout << users[i].loanUserNumber << endl;
     }
 }
 
@@ -305,7 +293,7 @@ void clearUserDetails() // Will be called once loan stautus is set to paid or wh
     users[userNumber].loanTotalWithInterest = 0;
 
     users[userNumber].loanUserMonthlyDue = 0;
-    users[userNumber].loanUserStatus = ""; // Paid, Ongoing
+    users[userNumber].loanUserStatus = ""; 
 
     for (int i=0; i < loanMaxDuration; i++)
     {
@@ -345,8 +333,8 @@ void enterUserDetails()
         blankLine();
         enterUserDetails();
     }
-    if (users[userNumber].monthlySalary < 0) { // if negative
-        cout << "Please enter a valid Age not negative and above age requirements (" << minAgeLoan << ")." << endl ;
+    if (users[userNumber].age <= 0) { // if negative
+        cout << "Please enter a valid Age not negative or zero and above age requirements (" << minAgeLoan << ")." << endl ;
         cout << "You are to go back to entering your User Details." << endl;
         blankLine();
         enterUserDetails();
@@ -385,7 +373,7 @@ void errorWrongAge() {
     }
 }
 
-void confirmUserDeatails() // Still need char error handling if entered is not Y || N
+void confirmUserDeatails() 
 {
     cout << "These are your Pesonal Details you have entered:" << endl;
     cout << "First Name: " << users[userNumber].firstName << endl;
@@ -419,7 +407,7 @@ void confirmUserDeatails() // Still need char error handling if entered is not Y
         mainFunction();
     }
     else {
-        cout << "The character/s you have inputted does not represent an UPPER CASE Y or N." << endl;
+        cout << "The character/s you have inputted does not represent an UPPER CASE Y, M or N." << endl;
         cout << "You are to confirm your User Details again." << endl;
         blankLine();
         confirmUserDeatails();
@@ -437,12 +425,12 @@ void createLoanAmount()
         cin.clear(); // clear input buffer to restore cin to a usable state
         cin.ignore(INT_MAX, '\n'); // ignore last input
 
-        cout << "Please enter a valid Monthly Salary in PHP." << endl ;
+        cout << "Please enter a valid Monthly Salary in PHP." << endl;
         cout << "You are to go back to entering your Monthly Salary." << endl;
         blankLine();
         createLoanAmount();
     }
-    if (users[userNumber].monthlySalary < 0) { // if negative
+    if (users[userNumber].monthlySalary <= 0) { // if negative
         cout << "The Monthly Salary of " << users[userNumber].monthlySalary << " PHP that you have entered is invalid since it is negative." << endl;
         cout << "Please enter a valid Monthly Salary in PHP." << endl ;
         cout << "You are to go back to entering your Monthly Salary." << endl;
@@ -467,11 +455,12 @@ void createLoanAmount()
         blankLine();
         createLoanAmount();
     }
+
     if (users[userNumber].loanUserAmount <= users[userNumber].loanMaxPossibleLoan && users[userNumber].loanUserAmount > 0) {
         cout << "You can now proceed to the next step." << endl;
         blankLine();
     }
-    if (users[userNumber].loanUserAmount > users[userNumber].loanMaxPossibleLoan) {
+    else if (users[userNumber].loanUserAmount > users[userNumber].loanMaxPossibleLoan) {
         cout << "The amount of loan of " << users[userNumber].loanUserAmount << " PHP that you have entered is not qualified." << endl;
         cout << "Since it is above the maximum possible loan of " << users[userNumber].loanMaxPossibleLoan << " PHP which is twice your salary." << endl;
         cout << "Please enter a valid loan amount that is below your maximum possible." << endl;
@@ -479,7 +468,7 @@ void createLoanAmount()
         blankLine();
         createLoanAmount();
     }
-    if (users[userNumber].loanUserAmount <= 0) {
+    else if (users[userNumber].loanUserAmount <= 0) {
         cout << "The amount of loan of " << users[userNumber].loanUserAmount << " PHP that you have entered is invalid since it is negative." << endl;
         cout << "Please enter a valid loan amount." << endl ;
         cout << "You are to go back to entering your Monthly Salary." << endl;
@@ -488,7 +477,7 @@ void createLoanAmount()
     }
 }
 
-void printLoanChart() // will also be called in the list of the options in first part of the system
+void printLoanChart() 
 {
     cout << "Loan Duration Chart based on Loan Amount List" << endl;
     cout << "Format = Loan Amount : Maximum Number of Months " << endl;
@@ -541,7 +530,7 @@ void evaluateLoanDuration()
         blankLine();
     }
     else if (users[userNumber].loanUserAmount < loanBracketAmount[1] && users[userNumber].loanUserAmount >= loanBracketAmount[0] && users[userNumber].loanUserDuration <= loanDurations[1]) {
-        cout << "Your loan of    " << users[userNumber].loanUserAmount << " PHP for " << users[userNumber].loanUserDuration << " Months is possible." << endl;
+        cout << "Your loan of " << users[userNumber].loanUserAmount << " PHP for " << users[userNumber].loanUserDuration << " Months is possible." << endl;
         cout << "You are now set for you loan to be computed." << endl;
         blankLine();
     }
@@ -633,7 +622,7 @@ void confirmLoan()
     blankLine();
 
     if (userAnswerConfirmLoan == "Y") {
-        users[userNumber].loanUserStatus = "Ongoing"; // This essentially confirms the loan
+        users[userNumber].loanUserStatus = "Ongoing";
         cout << "Thank you for confirming you loan." << endl;
         blankLine();
     }else if (userAnswerConfirmLoan == "1") {
@@ -763,7 +752,6 @@ void createMonthlyDue()
     cout << "You can only pay just one month worth of due for your loan." << endl;
     cout << "If you are to pay two or more months off of your loan you are to use this option again." << endl;
 
-    // Make Payment: Receipt System
     cout << "How much would you like to pay: ";
     cin >> loanPayment;
     blankLine();
@@ -821,7 +809,7 @@ void confirmMonthlyDue()
         cout << "You are to go back to paying your monthly due." << endl;
         blankLine();
         createMonthlyDue();
-    }else if (answerConfirmMonthlyDue == "N") {
+    }else if (answerConfirmMonthlyDue == "M") {
         cout << "You are to return back to the Main Menu." << endl;
         blankLine();
         mainFunction();
