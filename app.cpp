@@ -1,16 +1,21 @@
+// DS&A Final Project
+// Jenloke Magbojos
+// CS 1301
+// https://github.com/Jenloke/DS_FINAL_Project
+
 #include <iostream>
 #include <climits> // for INT_MAX limits
 #include <time.h>
 using namespace std;
 
-const int totalUsers = 5; // Max Users this should be easily changeable and would not break anything
-int userNumber;
+const int totalUsers = 100; // Max Users this should be easily changeable and would not break anything
+int userNumber; 
 
 const int minAgeLoan = 20;
 
-const int maxLoanMultiplier = 2;
+const int maxLoanMultiplier = 2; // multiplied to loanAmount to determine Max Loan
 const int loanBracketAmount[2] = {50000, 100000};
-const int loanMaxDuration = 24; 
+const int loanMaxDuration = 24;
 const int loanDurations[3] = {12,18,24};
 
 const float loanInterestRate = 0.05;
@@ -25,18 +30,19 @@ struct userInfo {
     int age;
     int monthlySalary;
 
-    int loanMaxPossibleLoan;
-    int loanUserAmount;
-    int loanUserDuration;
-    int loanTotalWithInterest;
+    int loanMaxPossibleLoan; // salary * maxLoanMultiplier
+    int loanUserAmount; // below maxPossibleLoan
+    int loanUserDuration; // follows loan bracket amount 
+    int loanTotalWithInterest; // loanUserAmount + (loanUserAmount + interest)
 
-    int loanUserMonthlyDue;
+    int loanUserMonthlyDue; // loanWithInterest / loanDuration
     string loanUserStatus; // Paid, Ongoing
-    bool loanNumberMonthsPaid[loanMaxDuration]; // true: paid; false: not paid
-    int loanMonthRemaining;
+    bool loanNumberMonthsPaid[loanMaxDuration]; // true for paid,  false for nto
+    int loanMonthRemaining; 
     int loanAmountRemaining;
-} users[totalUsers];
+} users[totalUsers]; // array that stores the members above 
 
+// Function Decalarations 
 void mainFunction();
 
 void blankLine();
@@ -48,6 +54,7 @@ void setUserNumber();
 void enterUserDetails();
 void errorWrongAge();
 void confirmUserDeatails();
+void createMonthlySalary();
 void createLoanAmount();
 void printLoanChart();
 void createLoanDuaration();
@@ -72,51 +79,6 @@ int main()
 {
     userNumber = 0;
     setAllUserNumber(); // Sets a numbered id for every user
-
-    /* //Mock Data: used for testing
-    // Mock User Details for Option #2
-    users[1].userGenerated = true;
-
-    users[1].firstName = "Jenloke";
-    users[1].lastName = "Magbojos";
-    users[1].age = 31;
-    users[1].monthlySalary = 20000;
-
-    users[1].loanUserDuration = 10;
-    users[1].loanTotalWithInterest = 5000;
-
-    users[1].loanUserMonthlyDue = 500;
-    users[1].loanUserStatus = "Ongoing"; // Paid, Ongoing
-    //loanNumberMonthsPaid[loanMaxDuration];
-    users[1].loanNumberMonthsPaid[0] = true; // two months paid
-    users[1].loanNumberMonthsPaid[1] = true;
-
-    //for (int i=0; i < users[1].loanUserDuration; i++ ) {
-    //    users[1].loanNumberMonthsPaid[i] = true;
-    //}
-    */
-
-    /*
-    users[2].userGenerated = true;
-
-    users[2].firstName = "Jenloke";
-    users[2].lastName = "Magbojos";
-    users[2].age = 31;
-    users[2].monthlySalary = 20000;
-
-    users[2].loanUserDuration = 3;
-    users[2].loanTotalWithInterest = 3000;
-
-    users[2].loanUserMonthlyDue = 1000;
-    users[2].loanUserStatus = "Ongoing"; // Paid, Ongoing
-    //loanNumberMonthsPaid[loanMaxDuration];
-    users[2].loanNumberMonthsPaid[0] = true; // two months paid
-    users[2].loanNumberMonthsPaid[1] = true;
-    */
-
-    //for (int i=0; i < totalUsers; i++) { // set user generated to true
-    //    users[i].userGenerated = true;
-    //}
 
     mainFunction();
 
@@ -158,6 +120,7 @@ void mainFunction()
                     enterUserDetails();
                     confirmUserDeatails();
 
+                    createMonthlySalary();
                     createLoanAmount();
                     createLoanDuaration();
                     evaluateLoanDuration();
@@ -166,7 +129,7 @@ void mainFunction()
                     evaluateRemainingDue();
 
                     printLoanDetails();
-                    confirmLoan(); 
+                    confirmLoan();
                     printLoanStatus();
                     printLoanBalanceList();
 
@@ -293,7 +256,7 @@ void clearUserDetails() // Will be called once loan stautus is set to paid or wh
     users[userNumber].loanTotalWithInterest = 0;
 
     users[userNumber].loanUserMonthlyDue = 0;
-    users[userNumber].loanUserStatus = ""; 
+    users[userNumber].loanUserStatus = "";
 
     for (int i=0; i < loanMaxDuration; i++)
     {
@@ -373,7 +336,7 @@ void errorWrongAge() {
     }
 }
 
-void confirmUserDeatails() 
+void confirmUserDeatails()
 {
     cout << "These are your Pesonal Details you have entered:" << endl;
     cout << "First Name: " << users[userNumber].firstName << endl;
@@ -414,7 +377,7 @@ void confirmUserDeatails()
     }
 }
 
-void createLoanAmount()
+void createMonthlySalary()
 {
     cout << "Please write your Monthly Salary to determine the " << endl;
     cout << "highest possible amount of loan we can loan you in PHP: ";
@@ -428,16 +391,20 @@ void createLoanAmount()
         cout << "Please enter a valid Monthly Salary in PHP." << endl;
         cout << "You are to go back to entering your Monthly Salary." << endl;
         blankLine();
-        createLoanAmount();
+        createMonthlySalary();
     }
+
     if (users[userNumber].monthlySalary <= 0) { // if negative
         cout << "The Monthly Salary of " << users[userNumber].monthlySalary << " PHP that you have entered is invalid since it is negative." << endl;
         cout << "Please enter a valid Monthly Salary in PHP." << endl ;
         cout << "You are to go back to entering your Monthly Salary." << endl;
         blankLine();
-        createLoanAmount();
+        createMonthlySalary();
     }
+}
 
+void createLoanAmount()
+{
     users[userNumber].loanMaxPossibleLoan = users[userNumber].monthlySalary * maxLoanMultiplier;
     cout << "Based on your given monthly Salary of, " << users[userNumber].monthlySalary << " PHP the maximum amount of loan possible is " << users[userNumber].loanMaxPossibleLoan << " PHP." << endl;
     cout << "Take note that interest is still not included which is " << loanInterestRateDisplay << "% added to your desired Loan Amount." << endl;
@@ -456,28 +423,24 @@ void createLoanAmount()
         createLoanAmount();
     }
 
-    if (users[userNumber].loanUserAmount <= users[userNumber].loanMaxPossibleLoan && users[userNumber].loanUserAmount > 0) {
-        cout << "You can now proceed to the next step." << endl;
-        blankLine();
-    }
-    else if (users[userNumber].loanUserAmount > users[userNumber].loanMaxPossibleLoan) {
+    if (users[userNumber].loanUserAmount > users[userNumber].loanMaxPossibleLoan) {
         cout << "The amount of loan of " << users[userNumber].loanUserAmount << " PHP that you have entered is not qualified." << endl;
         cout << "Since it is above the maximum possible loan of " << users[userNumber].loanMaxPossibleLoan << " PHP which is twice your salary." << endl;
         cout << "Please enter a valid loan amount that is below your maximum possible." << endl;
-        cout << "You are to go back to entering your Monthly Salary." << endl;
+        cout << "You are to go back to entering your Loan Amount." << endl;
         blankLine();
         createLoanAmount();
     }
     else if (users[userNumber].loanUserAmount <= 0) {
         cout << "The amount of loan of " << users[userNumber].loanUserAmount << " PHP that you have entered is invalid since it is negative." << endl;
         cout << "Please enter a valid loan amount." << endl ;
-        cout << "You are to go back to entering your Monthly Salary." << endl;
+        cout << "You are to go back to entering your Loan Amount." << endl;
         blankLine();
         createLoanAmount();
     }
 }
 
-void printLoanChart() 
+void printLoanChart()
 {
     cout << "Loan Duration Chart based on Loan Amount List" << endl;
     cout << "Format = Loan Amount : Maximum Number of Months " << endl;
@@ -561,11 +524,11 @@ void evaluateLoanTotal()
 void evaluateLoanMonthly()
 {
     users[userNumber].loanUserMonthlyDue = users[userNumber].loanTotalWithInterest / users[userNumber].loanUserDuration;
-    cout << "This is the amount you need to pay each month: " << users[userNumber].loanUserMonthlyDue << endl;
+    cout << "This is the amount you need to pay each month: " << users[userNumber].loanUserMonthlyDue << " PHP." << endl;
     cout << "To pay your monthly due use Option #2 in the Main Menu." << endl;
     blankLine();
 
-    for (int i=0; i < users[userNumber].loanUserDuration; i++) // sets nummonthsPaids arr to all false up to loan user duration
+    for (int i=0; i < users[userNumber].loanUserDuration; i++) // sets numMonthsPaids arr to all false up to loan user duration
     {
         users[userNumber].loanNumberMonthsPaid[i] = false;
     }
@@ -576,7 +539,7 @@ void printLoanDetails()
     cout << "User Number: " << users[userNumber].loanUserNumber + 1<< endl;
     cout << "Personal Details" << endl;
     cout << "First Name: " << users[userNumber].firstName << endl;
-    cout << "First Name: " << users[userNumber].lastName << endl;
+    cout << "Last Name: " << users[userNumber].lastName << endl;
     cout << "Age: " << users[userNumber].age << endl;
     blankLine();
 
@@ -630,10 +593,14 @@ void confirmLoan()
         blankLine();
         enterUserDetails();
     }else if (userAnswerConfirmLoan == "2") {
-        cout << "You are to go back to entering your Monthly Salary and Loan Amount." << endl;
+        cout << "You are to go back to entering your Monthly Salary." << endl;
+        blankLine();
+        createMonthlySalary();
+    }else if (userAnswerConfirmLoan == "3") {
+        cout << "You are to go back to entering your Loan Amount." << endl;
         blankLine();
         createLoanAmount();
-    }else if (userAnswerConfirmLoan == "3") {
+    }else if (userAnswerConfirmLoan == "4") {
         cout << "You are to go back to entering your Loan Duration." << endl;
         blankLine();
         createLoanDuaration();
@@ -784,7 +751,7 @@ void createMonthlyDue()
 
 void confirmMonthlyDue()
 {
-    cout << "User " << users[userNumber].loanUserNumber + 1 << ", named " << users[userNumber].firstName << " " << users[userNumber].lastName << "," << endl;
+    cout << "User " << users[userNumber].loanUserNumber + 1<< ", named " << users[userNumber].firstName << " " << users[userNumber].lastName << "," << endl;
     cout << "Your monthly due of " << users[userNumber].loanUserMonthlyDue << " PHP is to be paid off with " << loanPayment << " PHP." << endl;
     cout << "If you want to cancel this transaction and return to Main Menu input the letter (M)" << endl;
 
@@ -823,8 +790,8 @@ void confirmMonthlyDue()
 
 void printMonthyDueReceipt()
 {
-    time_t my_time = time(NULL);
-    cout << "Date: " << ctime(&my_time);
+    time_t my_time = time(NULL); 
+    cout << "Date: " << ctime(&my_time); // Prints Date and Time upon functions is called
     cout << "User #"<< users[userNumber].loanUserNumber + 1 << endl;
     cout << "Month Due: " << users[userNumber].loanUserMonthlyDue << " PHP" << endl;
     cout << "Amount Paid: " << loanPayment << " PHP" << endl;
