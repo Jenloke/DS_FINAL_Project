@@ -32,7 +32,7 @@ struct userInfo {
 
     int loanUserMonthlyDue;
     string loanUserStatus; // Paid, Ongoing
-    bool loanNumberMonthsPaid[loanMaxDuration];
+    bool loanNumberMonthsPaid[loanMaxDuration]; // true: paid; false: not paid
     int loanMonthRemaining;
     int loanAmountRemaining;
 } users[totalUsers];
