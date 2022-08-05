@@ -784,7 +784,7 @@ void createMonthlyDue()
 
 void confirmMonthlyDue()
 {
-    cout << "User " << users[userNumber].loanUserNumber + 1<< ", named " << users[userNumber].firstName << " " << users[userNumber].lastName << "," << endl;
+    cout << "User " << users[userNumber].loanUserNumber + 1 << ", named " << users[userNumber].firstName << " " << users[userNumber].lastName << "," << endl;
     cout << "Your monthly due of " << users[userNumber].loanUserMonthlyDue << " PHP is to be paid off with " << loanPayment << " PHP." << endl;
     cout << "If you want to cancel this transaction and return to Main Menu input the letter (M)" << endl;
 
@@ -825,7 +825,7 @@ void printMonthyDueReceipt()
 {
     time_t my_time = time(NULL);
     cout << "Date: " << ctime(&my_time);
-    cout << "User #"<< users[userNumber].loanUserNumber << endl;
+    cout << "User #"<< users[userNumber].loanUserNumber + 1 << endl;
     cout << "Month Due: " << users[userNumber].loanUserMonthlyDue << " PHP" << endl;
     cout << "Amount Paid: " << loanPayment << " PHP" << endl;
     cout << "Change: " << loanChange << " PHP" << endl;
